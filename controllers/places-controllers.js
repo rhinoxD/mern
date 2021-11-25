@@ -53,3 +53,19 @@ exports.createdPlace = (req, res, next) => {
   DUMMY_PLACES.push(createdPlace);
   res.status(201).json({ place: createdPlace });
 };
+
+exports.updatePlace = (req, res, next) => {
+  const { title, description } = req.body;
+  const { pid } = req.params;
+
+  const updatedPlace = DUMMY_PLACES.find((p) => p.id === pid);
+  const placeIndex = DUMMY_PLACES.findIndex((p) => p.id === pid);
+  updatedPlace.title = title;
+  updatedPlace.description = description;
+
+  DUMMY_PLACES[placeIndex] = updatedPlace;
+
+  res.status(200).json({ place: updatedPlace });
+};
+
+exports.deletePlace = (req, res, next) => {};
