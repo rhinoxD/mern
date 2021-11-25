@@ -15,7 +15,7 @@ router.post(
     check('description').isLength({ min: 5 }),
     check('address').not().isEmpty(),
   ],
-  placesControllers.createdPlace
+  placesControllers.createPlace
 );
 
 router.patch(
