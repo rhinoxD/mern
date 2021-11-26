@@ -161,7 +161,7 @@ exports.deletePlace = async (req, res, next) => {
   const { pid } = req.params;
   let place;
   try {
-    place = await Place.findById(pid);
+    place = await Place.findById(pid).populate('creator');
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not delete place.',
@@ -169,8 +169,17 @@ exports.deletePlace = async (req, res, next) => {
     );
     return next(error);
   }
+  if (!place) {
+    const error = new HttpError('Could not find place for this id.', 404);
+    return next(error);
+  }
   try {
-    place.remove();
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await place.remove({ session: sess }); // remove place from places collection
+    place.creator.places.pull(place); // remove place from the user
+    await place.creator.save({ session: sess }); // save newly created user 
+    await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not delete place.',
