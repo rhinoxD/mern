@@ -7,23 +7,8 @@ const getCoordsForAddress = require('../util/location');
 const Place = require('../models/place');
 const User = require('../models/user');
 
-let DUMMY_PLACES = [
-  {
-    id: 'p1',
-    title: 'Empire State Building',
-    description: 'One of the most famous sky scrapers in the world!',
-    imageUrl: 'https://static.toiimg.com/photo/71579199.cms',
-    address: '20 W 34th St, New York, NY 10001',
-    location: {
-      lat: 40.7484474,
-      lng: -73.9871516,
-    },
-    creator: 'u1',
-  },
-];
-
 exports.getPlaceById = async (req, res, next) => {
-  const { pid } = req.params; // { pid: 'p1' }
+  const { pid } = req.params;
   let place;
   try {
     place = await Place.findById(pid);
@@ -40,7 +25,7 @@ exports.getPlaceById = async (req, res, next) => {
     );
     return next(error);
   }
-  res.json({ place: place.toObject({ getters: true }) }); // => { place } = { place: place }
+  res.json({ place: place.toObject({ getters: true }) });
 };
 
 exports.getPlacesByUserId = async (req, res, next) => {
@@ -50,7 +35,7 @@ exports.getPlacesByUserId = async (req, res, next) => {
     places = await Place.find({ creator: uid });
   } catch (err) {
     const error = new HttpError(
-      'Fethcing places failed, please try again later.',
+      'Fetching places failed, please try again later.',
       500
     );
     return next(error);
@@ -178,7 +163,7 @@ exports.deletePlace = async (req, res, next) => {
     sess.startTransaction();
     await place.remove({ session: sess }); // remove place from places collection
     place.creator.places.pull(place); // remove place from the user
-    await place.creator.save({ session: sess }); // save newly created user 
+    await place.creator.save({ session: sess }); // save newly created user
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(
