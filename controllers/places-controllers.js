@@ -99,7 +99,7 @@ exports.createPlace = async (req, res, next) => {
   res.status(201).json({ place: createdPlace });
 };
 
-exports.updatePlace = (req, res, next) => {
+exports.updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new HttpError('Invalid inputs passed, please check your data.', 422);
@@ -107,14 +107,31 @@ exports.updatePlace = (req, res, next) => {
   const { title, description } = req.body;
   const { pid } = req.params;
 
-  const updatedPlace = DUMMY_PLACES.find((p) => p.id === pid);
-  const placeIndex = DUMMY_PLACES.findIndex((p) => p.id === pid);
-  updatedPlace.title = title;
-  updatedPlace.description = description;
+  let place;
+  try {
+    place = await Place.findById(pid);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not update place.',
+      500
+    );
+    return next(error);
+  }
 
-  DUMMY_PLACES[placeIndex] = updatedPlace;
+  place.title = title;
+  place.description = description;
 
-  res.status(200).json({ place: updatedPlace });
+  try {
+    await place.save();
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not update place.',
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ place: place.toObject({ getters: true }) });
 };
 
 exports.deletePlace = (req, res, next) => {
