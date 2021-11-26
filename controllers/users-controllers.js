@@ -34,7 +34,7 @@ exports.signup = async (req, res, next) => {
       new HttpError('Invalid inputs passed, please check your data.', 422)
     );
   }
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
   let existingUser;
   try {
     existingUser = await User.findOne({ email });
@@ -55,7 +55,7 @@ exports.signup = async (req, res, next) => {
     image:
       'https://exploringbits.com/wp-content/uploads/2021/11/anime-girl-pfp-2.jpg?ezimgfmt=rs:352x380/rscb3/ng:webp/ngcb3',
     password,
-    places,
+    places: [],
   });
   try {
     await createdUser.save();
