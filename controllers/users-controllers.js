@@ -72,5 +72,8 @@ exports.login = async (req, res, next) => {
     );
     return next(error);
   }
-  res.json({ message: 'LOGGED IN!' });
+  res.json({
+    message: 'LOGGED IN!',
+    user: existingUser.toObject({ getters: true }),
+  });
 };
