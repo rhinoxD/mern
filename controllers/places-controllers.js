@@ -71,7 +71,7 @@ exports.createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image: 'https://static.toiimg.com/photo/71579199.cms',
+    image: req.file.path,
     creator,
   });
   let user;
