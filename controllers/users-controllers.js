@@ -42,8 +42,7 @@ exports.signup = async (req, res, next) => {
   const createdUser = new User({
     name,
     email,
-    image:
-      'https://exploringbits.com/wp-content/uploads/2021/11/anime-girl-pfp-2.jpg?ezimgfmt=rs:352x380/rscb3/ng:webp/ngcb3',
+    image: req.file.path,
     password,
     places: [],
   });
