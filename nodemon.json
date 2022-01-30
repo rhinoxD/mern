@@ -1,8 +1,0 @@
-{
-  "env": {
-    "DB_USER": "our-second-user",
-    "DB_PASSWORD": "27MEmcrem0FeXs8i",
-    "DB_NAME": "mern",
-    "JWT_KEY": "supersecret"
-  }
-}
